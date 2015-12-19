@@ -1,0 +1,18 @@
+SUBROUTINE READ_MODEL(MODEL)
+
+  USE CONS_PARAM
+  USE INPUT_PARAM
+
+  IMPLICIT NONE
+
+  REAL(DP), DIMENSION(10)             :: MODEL
+  INTEGER                             :: I
+
+  OPEN (UNIT=97, FILE = ATMOSIN_PATH, ACTION = "read")!, FORM='formatted')
+  DO I = 1, 10
+     READ (UNIT=97, FMT=*) MODEL(I)
+  ENDDO
+  CLOSE(97)
+
+ 
+END SUBROUTINE READ_MODEL

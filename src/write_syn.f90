@@ -1,0 +1,18 @@
+SUBROUTINE WRITE_SYN(SYN)
+
+  USE CONS_PARAM
+  USE INPUT_PARAM
+  USE LINE_PARAM
+
+  IMPLICIT NONE
+
+  INTEGER                                        :: I
+  REAL(DP) , DIMENSION(NFILT,4)                  :: SYN
+
+
+	OPEN (UNIT=97, FILE = SYN_PATH, ACTION="write", FORM='formatted')
+	DO I = 1, NFILT
+	WRITE (UNIT=97, FMT=*) SYN(I,1),SYN(I,2),SYN(I,3),SYN(I,4)
+	ENDDO
+	CLOSE(97)
+END SUBROUTINE WRITE_SYN
