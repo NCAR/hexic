@@ -38,3 +38,6 @@ set(f_srcs
 link_libraries(${LAPACK_LIBRARIES})
 
 add_executable(hexic ${f_srcs} ${f90_srcs})
+
+install(TARGETS hexic
+        DESTINATION bin)

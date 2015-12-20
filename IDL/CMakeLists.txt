@@ -21,8 +21,8 @@ include_directories(${IDL_INCLUDE_DIR})
 target_link_libraries(hexic-IDL-bindings ${IDL_LIBRARY})
 
 install(TARGETS hexic-IDL-bindings
-  RUNTIME DESTINATION lib
-  LIBRARY DESTINATION lib
+        RUNTIME DESTINATION lib
+        LIBRARY DESTINATION lib
 )
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${HEXIC_IDL_BINDINGS}.dlm"
-  DESTINATION lib)
+        DESTINATION lib)
