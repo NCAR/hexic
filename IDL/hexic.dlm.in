@@ -1,0 +1,7 @@
+MODULE        hexic
+DESCRIPTION   Tools for inverting filtergram instruments
+VERSION       ${VERSION}
+SOURCE        CSAC
+BUILD_DATE    ${hexic_BUILD_DATE}
+
+function hexic_invert            1 1
