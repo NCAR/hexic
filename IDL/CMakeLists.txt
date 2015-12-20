@@ -1,5 +1,5 @@
-set(BINDINGS_NAME idlhexic)
-configure_file("hexic.dlm.in" "${BINDINGS_NAME}.dlm")
+set(HEXIC_IDL_BINDINGS idlhexic)
+configure_file("hexic.dlm.in" "${HEXIC_IDL_BINDINGS}.dlm")
 add_library(hexic-IDL-bindings SHARED hexic.c)
 
 find_package(IDL REQUIRED)
@@ -13,7 +13,7 @@ endif ()
 
 set_target_properties(hexic-IDL-bindings
   PROPERTIES
-    OUTPUT_NAME "${BINDINGS_NAME}"
+    OUTPUT_NAME "${HEXIC_IDL_BINDINGS}"
     PREFIX ""
 )
 
@@ -24,4 +24,5 @@ install(TARGETS hexic-IDL-bindings
   RUNTIME DESTINATION lib
   LIBRARY DESTINATION lib
 )
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/hexic.dlm" DESTINATION lib)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${HEXIC_IDL_BINDINGS}.dlm"
+  DESTINATION lib)
