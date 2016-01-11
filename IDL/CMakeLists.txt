@@ -1,5 +1,6 @@
 set(HEXIC_IDL_BINDINGS idlhexic)
 configure_file("hexic.dlm.in" "${HEXIC_IDL_BINDINGS}.dlm")
+
 add_library(hexic-IDL-bindings SHARED hexic.c)
 
 find_package(IDL)
@@ -31,8 +32,7 @@ if (BUILD_IDL_BINDINGS)
   )
 
   include_directories(${IDL_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/include)
-  # TODO: add hexic-shared target to link libraries
-  target_link_libraries(hexic-IDL-bindings ${IDL_LIBRARY})
+  target_link_libraries(hexic-IDL-bindings hexic-static ${IDL_LIBRARY})
 
   install(TARGETS hexic-IDL-bindings
           RUNTIME DESTINATION lib

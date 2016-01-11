@@ -12,9 +12,33 @@
 
 #include "idl_export.h"
 
+#include "hexic.h"
+
+
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
-  return IDL_GettmpLong(0);
+  IDL_VPTR vptr_image_cube = argv[0];
+  float *image_cube;
+  int width, height, n_spectra, status;
+
+  IDL_ENSURE_ARRAY(vptr_image_cube);
+  IDL_ENSURE_SIMPLE(vptr_image_cube);
+
+  if (vptr_image_cube->value.arr->n_dim != 3) {
+    IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be 3-dimensional");
+  }
+  if (vptr_image_cube->type != IDL_TYP_FLOAT) {
+    IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be of type float");
+  }
+
+  image_cube = (float *) vptr_image_cube->value.arr->data;
+  n_spectra = vptr_image_cube->value.arr->dim[0];
+  width = vptr_image_cube->value.arr->dim[1];
+  height = vptr_image_cube->value.arr->dim[2];
+
+  status = hexic_invert(image_cube, width, height, n_spectra);
+
+  return IDL_GettmpLong(status);
 }
 
 

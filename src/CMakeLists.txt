@@ -2,6 +2,9 @@ find_package(LAPACK REQUIRED)
 
 enable_language(Fortran)
 
+set(main_src
+    main.f90)
+
 set(f90_srcs
     cons_param.f90
     factorial.f90
@@ -12,7 +15,6 @@ set(f90_srcs
     inv_param.f90
     inv_utils.f90
     line_param.f90
-    main.f90
     new_invert.f90
     ran_mod.f90
     read_filt.f90
@@ -35,9 +37,36 @@ set(f90_srcs
 set(f_srcs
     voigt.f)
 
+set(c_wrapper
+    hexic.c)
+
 link_libraries(${LAPACK_LIBRARIES})
 
-add_executable(hexic ${f_srcs} ${f90_srcs})
+add_library(hexic-shared SHARED
+            ${c_wrapper}
+            ${f_srcs}
+            ${f90_srcs})
+set_target_properties(hexic-shared
+  PROPERTIES
+    OUTPUT_NAME libhexic
+    PREFIX ""
+)
+
+add_library(hexic-static STATIC
+            ${c_wrapper}
+            ${f_srcs}
+            ${f90_srcs})
+set_target_properties(hexic-static
+  PROPERTIES
+    OUTPUT_NAME libhexic
+    PREFIX ""
+)
+
+add_executable(hexic ${main_src} ${f_srcs} ${f90_srcs})
 
 install(TARGETS hexic
         DESTINATION bin)
+install(TARGETS hexic-shared
+        DESTINATION lib)
+install(TARGETS hexic-static
+        DESTINATION lib)
