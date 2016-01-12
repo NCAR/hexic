@@ -42,20 +42,19 @@ set(c_wrapper
 
 link_libraries(${LAPACK_LIBRARIES})
 
-add_library(hexic-shared SHARED
+add_library(hexic-objects OBJECT
             ${c_wrapper}
             ${f_srcs}
             ${f90_srcs})
+
+add_library(hexic-shared SHARED $<TARGET_OBJECTS:hexic-objects>)
 set_target_properties(hexic-shared
   PROPERTIES
     OUTPUT_NAME libhexic
     PREFIX ""
 )
 
-add_library(hexic-static STATIC
-            ${c_wrapper}
-            ${f_srcs}
-            ${f90_srcs})
+add_library(hexic-static STATIC $<TARGET_OBJECTS:hexic-objects>)
 set_target_properties(hexic-static
   PROPERTIES
     OUTPUT_NAME libhexic
