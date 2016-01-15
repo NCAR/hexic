@@ -24,13 +24,6 @@ IMPLICIT NONE
         READ(UNIT=97, FMT='(A)') LINE
      ENDDO
      MODE = Line
-
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0) 
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     READ(Line,*) NPIX ! Converts string to integer NPIX
-
      READ (UNIT=97, FMT='(A)') Line
      DO WHILE (SCAN(Line,'!#').GT.0) 
         READ(UNIT=97, FMT='(A)') Line
