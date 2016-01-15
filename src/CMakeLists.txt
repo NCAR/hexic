@@ -23,7 +23,7 @@ set(f90_srcs
     read_line.f90
     read_model.f90
     read_noise.f90
-    read_obs.f90
+#    read_obs.f90
     read_scat.f90
     read_weights.f90
     solve_svd.f90
