@@ -61,10 +61,6 @@ set_target_properties(hexic-static
     PREFIX ""
 )
 
-add_executable(hexic ${main_src} ${f_srcs} ${f90_srcs})
-
-install(TARGETS hexic
-        DESTINATION bin)
 install(TARGETS hexic-shared
         DESTINATION lib)
 install(TARGETS hexic-static
