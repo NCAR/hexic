@@ -1,4 +1,4 @@
-SUBROUTINE run_hexic(OBSERVATIONS, Nx, Ny, Nfilt)
+SUBROUTINE run_hexic(OBSERVATIONS, dimX, dimY, Nfilts)
 
 USE CONS_PARAM
 USE INPUT_PARAM
@@ -10,8 +10,8 @@ USE FORWARD
 IMPLICIT NONE
 
 REAL(DP), DIMENSION(NFILT, 4, Nx, Ny)  :: OBSERVATIONS, SYNTHETIC
-REAL(DP), DIMENSION(11, Nx, Ny)        :: RESULTS(11, Nx, Ny)
-REAL(DP), DIMENSION(Nfilt, 4)          :: OBS(:,:), SYN(:,:), SCAT(:,:)
+REAL(DP), DIMENSION(11, Nx, Ny)        :: RESULTS
+REAL(DP), DIMENSION(NFILT, 4)          :: OBS, SYN, SCAT
 REAL(DP), ALLOCATABLE                  :: DSYN(:, :,:)
 REAL(DP), ALLOCATABLE                  :: FILTERS(:,:)
 REAL(DP), DIMENSION(11)                :: MODEL, RES
@@ -19,14 +19,17 @@ REAL(DP), DIMENSION(13)                :: ERR
 REAL(DP), DIMENSION(8)                 :: WFILT
 LOGICAL                                :: file_exists
 
-INTEGER                                :: k, l, Nfilt, convergence_flag
+INTEGER                                :: k, l, Nfilts, dimX, dimY, convergence_flag
 
  
  ! ------ Read main input file and atomic line file
 
   CALL READ_INPUT
   CALL READ_LINE
- 
+ Nfilt = Nfilts
+ Nx = dimX
+ Ny= dimY
+
  ! ------ Allocate memory for the variables that depend on user input
   ALLOCATE(DSYN(11, NFILT, 4), FILTERS(NUMW, NFILT))
   FILTERS(:,:) = 0D0

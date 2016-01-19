@@ -23,8 +23,8 @@ IMPLICIT NONE
      READ (UNIT=97, FMT='(F5.2)') STEPW
      READ (UNIT=97, FMT='(A)') Line
      READ (UNIT=97, FMT='(F7.2)') LAM_START
-     READ (UNIT=97, FMT='(A)') Line
-     READ (UNIT=97, FMT='(I4)') NFILT
+!     READ (UNIT=97, FMT='(A)') Line
+!     READ (UNIT=97, FMT='(I4)') NFILTS
      READ (UNIT=97, FMT='(A)') Line
      READ (UNIT=97, FMT='(F5.2)') FILT_SAMP
      READ (UNIT=97, FMT='(A)') Line
