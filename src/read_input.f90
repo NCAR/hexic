@@ -15,7 +15,7 @@ IMPLICIT NONE
   CHARACTER (LEN = 256) :: Line = ' '
   LOGICAL               :: file_exists
   
-  OPEN (UNIT=97, FILE = "USER_FILES/INPUT.txt", ACTION="read", FORM='formatted')
+  OPEN (UNIT=97, FILE = "/Users/rce/work/HEXIC/GIT/hexic/USER_FILES/INPUT.txt", ACTION="read", FORM='formatted')
      READ (UNIT=97, FMT='(A)') Line
      DO WHILE (SCAN(Line,'!#').GT.0) 
         READ(UNIT=97, FMT='(A)') Line
