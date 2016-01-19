@@ -26,6 +26,7 @@ set(f90_srcs
 #    read_obs.f90
     read_scat.f90
     read_weights.f90
+    run_hexic.f90
     solve_svd.f90
     wave_init.f90
     wfa_guess.f90
