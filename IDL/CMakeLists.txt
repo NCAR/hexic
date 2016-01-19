@@ -1,8 +1,6 @@
 set(HEXIC_IDL_BINDINGS idlhexic)
 configure_file("hexic.dlm.in" "${HEXIC_IDL_BINDINGS}.dlm")
 
-add_library(hexic-IDL-bindings SHARED hexic.c)
-
 find_package(IDL)
 
 if (IDL_FOUND)
@@ -18,6 +16,8 @@ endif ()
 
 
 if (BUILD_IDL_BINDINGS)
+  add_library(hexic-IDL-bindings SHARED hexic.c)
+
   if (UNIX)
     set_target_properties(hexic-IDL-bindings
       PROPERTIES
