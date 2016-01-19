@@ -4,7 +4,7 @@ if (POLICY CMP0042)
   cmake_policy(SET CMP0042 NEW)
 endif ()
 
-project(hexic)
+project(hexic Fortran C)
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "1")
@@ -22,6 +22,7 @@ LONG_TODAY(hexic_BUILD_DATE)
 message(STATUS "Build date = ${hexic_BUILD_DATE}")
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
 
 add_subdirectory(include)
 add_subdirectory(src)

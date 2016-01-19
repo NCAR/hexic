@@ -1,7 +1,5 @@
 find_package(LAPACK REQUIRED)
 
-enable_language(Fortran)
-
 set(main_src
     main.f90)
 
