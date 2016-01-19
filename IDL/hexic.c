@@ -24,11 +24,11 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   IDL_ENSURE_ARRAY(vptr_image_cube);
   IDL_ENSURE_SIMPLE(vptr_image_cube);
 
-  if (vptr_image_cube->value.arr->n_dim != 3) {
-    IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be 3-dimensional");
+  if (vptr_image_cube->value.arr->n_dim != 4) {
+    IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be 4-dimensional");
   }
-  if (vptr_image_cube->type != IDL_TYP_FLOAT) {
-    IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be of type float");
+  if (vptr_image_cube->type != IDL_TYP_DOUBLE) {
+    IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be of type double");
   }
 
   image_cube = (float *) vptr_image_cube->value.arr->data;
