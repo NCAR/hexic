@@ -11,8 +11,6 @@ pro hexic_invert_example
   ;observations = randomu(seed, ny, nx, n_polarization_states, n_filters, /double)
   observations = dindgen(ny, nx, n_polarization_states, n_filters)
 
-  print, observations
-
   ; call hexic_invert
   status = hexic_invert(observations)
   help, status
