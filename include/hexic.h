@@ -1,6 +1,6 @@
 #include "FC.h"
 
-int hexic_invert(float *image_cube, int width, int height, int n_spectra);
+int hexic_invert(double *observations, int width, int height, int n_filters);
 
 // Fortran routine
-int run_hexic(float *image_cube, int width, int height, int n_spectra);
+int run_hexic(double *observations, int *width, int *height, int *n_filters);

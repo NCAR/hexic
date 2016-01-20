@@ -17,26 +17,26 @@
 
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
-  IDL_VPTR vptr_image_cube = argv[0];
-  float *image_cube;
-  int width, height, n_spectra, status;
+  IDL_VPTR vptr_observations = argv[0];
+  double *observations;
+  int width, height, n_filters, status;
 
-  IDL_ENSURE_ARRAY(vptr_image_cube);
-  IDL_ENSURE_SIMPLE(vptr_image_cube);
+  IDL_ENSURE_ARRAY(vptr_observations);
+  IDL_ENSURE_SIMPLE(vptr_observations);
 
-  if (vptr_image_cube->value.arr->n_dim != 4) {
+  if (vptr_observations->value.arr->n_dim != 4) {
     IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be 4-dimensional");
   }
-  if (vptr_image_cube->type != IDL_TYP_DOUBLE) {
+  if (vptr_observations->type != IDL_TYP_DOUBLE) {
     IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be of type double");
   }
 
-  image_cube = (float *) vptr_image_cube->value.arr->data;
-  n_spectra = vptr_image_cube->value.arr->dim[0];
-  width = vptr_image_cube->value.arr->dim[1];
-  height = vptr_image_cube->value.arr->dim[2];
+  observations = (double *) vptr_observations->value.arr->data;
+  n_filters = vptr_observations->value.arr->dim[3];
+  width = vptr_observations->value.arr->dim[1];
+  height = vptr_observations->value.arr->dim[0];
 
-  status = hexic_invert(image_cube, width, height, n_spectra);
+  status = hexic_invert(observations, width, height, n_filters);
 
   return IDL_GettmpLong(status);
 }
