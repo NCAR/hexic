@@ -25,3 +25,18 @@ if (BUILD_PYTHON_BINDINGS)
   install(FILES hexic_bindings.py
           DESTINATION lib)
 endif ()
+
+find_package(PythonLibs)
+include_directories(${PYTHON_INCLUDE_DIRS})
+add_library(spam SHARED spam.c)
+#target_link_libraries(spam "${PYTHON_LIBRARIES}")
+set_target_properties(spam
+  PROPERTIES
+    LINK_FLAGS "-undefined dynamic_lookup"
+    SUFFIX ".so"
+    PREFIX ""
+)
+install(TARGETS spam
+          RUNTIME DESTINATION lib
+          LIBRARY DESTINATION lib
+)
