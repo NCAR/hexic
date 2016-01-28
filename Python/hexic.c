@@ -8,13 +8,27 @@
 
 
 static PyObject *py_hexic_invert(PyObject *self, PyObject *args) {
-  PyObject *observations;
-  if (!PyArg_ParseTuple(args, "O", observations)) return NULL;
+  PyArrayObject *observations_array = NULL;
+  double *observations;
+
+  if (!PyArg_ParseTuple(args, "O!", &PyArray_Type, &observations_array)) return NULL;
+
+  // TODO: check observations array is:
+  //   - type double
+  //   - 4-dimensional
+  //   - 6 filters
+  //   - 4 polarization states
+
+  observations = (double *) PyArray_DATA(observations_array);
+
+  // TODO: call hexic_invert
+
   return Py_BuildValue("i", 0);
 }
 
 static PyMethodDef hexic_methods[] = {
-  {"invert", py_hexic_invert, METH_VARARGS, "A general purpose Milne-Eddington spectral line inversion code"},
+  {"invert", py_hexic_invert, METH_VARARGS,
+   "A general purpose Milne-Eddington spectral line inversion code"},
   {NULL, NULL, 0, NULL}
 };
 
