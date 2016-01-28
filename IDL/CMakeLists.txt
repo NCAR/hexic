@@ -32,7 +32,7 @@ if (BUILD_IDL_BINDINGS)
   )
 
   include_directories(${IDL_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/include)
-  target_link_libraries(hexic-IDL-bindings hexic-static ${IDL_LIBRARY})
+  target_link_libraries(hexic-IDL-bindings chexic-static ${IDL_LIBRARY})
 
   install(TARGETS hexic-IDL-bindings
           RUNTIME DESTINATION lib

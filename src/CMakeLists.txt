@@ -42,9 +42,22 @@ set(c_wrapper
 link_libraries(${LAPACK_LIBRARIES})
 
 add_library(hexic-objects OBJECT
-            ${c_wrapper}
             ${f_srcs}
             ${f90_srcs})
+
+add_library(chexic-shared SHARED ${c_wrapper} $<TARGET_OBJECTS:hexic-objects>)
+set_target_properties(chexic-shared
+  PROPERTIES
+    OUTPUT_NAME libchexic
+    PREFIX ""
+)
+
+add_library(chexic-static STATIC ${c_wrapper} $<TARGET_OBJECTS:hexic-objects>)
+set_target_properties(chexic-static
+  PROPERTIES
+    OUTPUT_NAME libchexic
+    PREFIX ""
+)
 
 add_library(hexic-shared SHARED $<TARGET_OBJECTS:hexic-objects>)
 set_target_properties(hexic-shared
@@ -60,6 +73,10 @@ set_target_properties(hexic-static
     PREFIX ""
 )
 
+install(TARGETS chexic-shared
+        DESTINATION lib)
+install(TARGETS chexic-static
+        DESTINATION lib)
 install(TARGETS hexic-shared
         DESTINATION lib)
 install(TARGETS hexic-static
