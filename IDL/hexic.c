@@ -32,10 +32,13 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   }
 
   observations = (double *) vptr_observations->value.arr->data;
-  n_filters = vptr_observations->value.arr->dim[3];
+ /* n_filters = vptr_observations->value.arr->dim[3];
   width = vptr_observations->value.arr->dim[1];
-  height = vptr_observations->value.arr->dim[0];
-
+  height = vptr_observations->value.arr->dim[0]; */
+  n_filters = vptr_observations->value.arr->dim[0];
+  width = vptr_observations->value.arr->dim[2];
+  height = vptr_observations->value.arr->dim[3];
+    
   status = hexic_invert(observations, width, height, n_filters);
 
   return IDL_GettmpLong(status);

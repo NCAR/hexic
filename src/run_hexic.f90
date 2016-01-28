@@ -14,9 +14,10 @@ IMPLICIT NONE
 integer(c_int), intent(in)             :: Nfilts, dimX, dimY
 real(c_double), intent(in)             :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 INTEGER                                :: k, l, s, p, convergence_flag
+! The next two variables will be passed through the header
 REAL(DP), DIMENSION(NFILT, 4, Nx, Ny)  :: SYNTHETIC
 REAL(DP), DIMENSION(11, Nx, Ny)        :: RESULTS
-REAL(DP), DIMENSION(NFILT, 4)          :: OBS, SYN, SCAT
+REAL(DP), ALLOCATABLE                  :: OBS(:,:), SYN(:,:), SCAT(:,:)
 REAL(DP), ALLOCATABLE                  :: DSYN(:, :,:)
 REAL(DP), ALLOCATABLE                  :: FILTERS(:,:)
 REAL(DP), DIMENSION(11)                :: MODEL, RES
@@ -32,8 +33,10 @@ LOGICAL                                :: file_exists
  Nx = dimX
  Ny= dimY
 
+
  ! ------ Allocate memory for the variables that depend on user input
   ALLOCATE(DSYN(11, NFILT, 4), FILTERS(NUMW, NFILT))
+  ALLOCATE(OBS(NFILT, 4), SYN(NFILT, 4), SCAT(NFILT, 4))
   FILTERS(:,:) = 0D0
 
  ! ------ Read instrument filter profiles
@@ -61,9 +64,7 @@ LOGICAL                                :: file_exists
 
      DO k = 1, Nx
         DO l = 1, Ny
-
-           OBS(:,:) = OBSERVATIONS(:,:, k, l)
-
+           OBS(:,:) = OBSERVATIONS(:,:,k,l)
            ! Initialize some inversion variables (requires Icont)
            CALL INV_INIT(MAXVAL(OBS(:,1)))
            ! Call inversion module and synthesize best fit to observations
