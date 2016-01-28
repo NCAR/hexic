@@ -36,6 +36,8 @@ if (BUILD_PYTHON_BINDINGS)
           RUNTIME DESTINATION lib
           LIBRARY DESTINATION lib
   )
+  install(FILES hexic_example.py
+          DESTINATION examples)
 endif ()
 
 
