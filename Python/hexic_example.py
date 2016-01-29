@@ -13,7 +13,10 @@ def main():
     observations = observations.reshape((n_filters, n_pol_states, nx, ny))
 
     # compute the inversion
-    result = hexic.invert(observations)
+    try:
+        result = hexic.invert(observations)
+    except ValueError as e:
+        print 'calling error: %s' % e
 
 
 if __name__ == '__main__':

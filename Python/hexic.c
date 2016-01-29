@@ -16,20 +16,24 @@ static PyObject *py_hexic_invert(PyObject *self, PyObject *args) {
 
   if (!PyArg_ParseTuple(args, "O!", &PyArray_Type, &observations_array)) return NULL;
 
-  // TODO: check observations array is:
-  //   - type double
-
+  // check type and shape of observations array
   dtype = PyArray_DTYPE(observations_array);
-
+  if (dtype->type != 'd') {
+    PyErr_SetString(PyExc_ValueError, "wrong type");
+    return NULL;
+  }
   if (PyArray_NDIM(observations_array) != 4) {
-    printf("wrong number of dimensions\n");
+    PyErr_SetString(PyExc_ValueError, "wrong number of dimensions");
+    return NULL;
   }
   shape = PyArray_SHAPE(observations_array);
   if (shape[0] != 6) {
-    printf("wrong number of filters\n");
+    PyErr_SetString(PyExc_ValueError, "wrong number of filters");
+    return NULL;
   }
   if (shape[1] != 4) {
-    printf("wrong number of polarization states\n");
+    PyErr_SetString(PyExc_ValueError, "wrong number of polarization states");
+    return NULL;
   }
   observations = (double *) PyArray_DATA(observations_array);
 
