@@ -18,6 +18,7 @@ endif ()
 if (BUILD_PYTHON_BINDINGS)
   include_directories(${PYTHON_INCLUDE_DIRS} ${PY_NUMPY}/core/include)
   add_library(hexic-Python-bindings SHARED hexic.c)
+  target_link_libraries(hexic-Python-bindings chexic-static)
 
   if (APPLE)
     set_target_properties(hexic-Python-bindings
