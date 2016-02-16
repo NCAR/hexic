@@ -18,8 +18,10 @@
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   IDL_VPTR vptr_observations = argv[0];
-  double *observations;
+  IDL_VPTR vptr_results, vptr_synthetic;
+  double *observations, *results, *synthetic;
   int width, height, n_filters, status;
+  IDL_MEMINT results_dims[3];
 
   IDL_ENSURE_ARRAY(vptr_observations);
   IDL_ENSURE_SIMPLE(vptr_observations);
@@ -32,16 +34,16 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   }
 
   observations = (double *) vptr_observations->value.arr->data;
- /* n_filters = vptr_observations->value.arr->dim[3];
-  width = vptr_observations->value.arr->dim[1];
-  height = vptr_observations->value.arr->dim[0]; */
   n_filters = vptr_observations->value.arr->dim[0];
   width = vptr_observations->value.arr->dim[2];
   height = vptr_observations->value.arr->dim[3];
-    
-  status = hexic_invert(observations, width, height, n_filters);
 
-  return IDL_GettmpLong(status);
+  status = hexic_invert(observations, width, height, n_filters, results, synthetic);
+  results_dims[0] = 11;
+  results_dims[1] = width;
+  results_dims[2] = height;
+  vptr_results = IDL_ImportArray(3, results_dims, IDL_TYP_DOUBLE, (UCHAR *) results, NULL, NULL);
+  return(vptr_results);
 }
 
 

@@ -1,4 +1,4 @@
-SUBROUTINE run_hexic(OBSERVATIONS, dimX, dimY, Nfilts)
+SUBROUTINE run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC)
 
 use iso_c_binding, only: c_double, c_int
 
@@ -11,22 +11,23 @@ USE FORWARD
 
 IMPLICIT NONE
 
-integer(c_int), intent(in)             :: Nfilts, dimX, dimY
-real(c_double), intent(in)             :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
-INTEGER                                :: k, l, s, p, convergence_flag
+! arguments to run_hexic
+integer(c_int), intent(in)         :: Nfilts, dimX, dimY
+real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
+real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
+real(c_double), intent(out)        :: RESULTS(11, dimX, dimY)
+
+INTEGER                                   :: k, l, s, p, convergence_flag
 ! The next two variables will be passed through the header
-REAL(DP), DIMENSION(NFILT, 4, Nx, Ny)  :: SYNTHETIC
-REAL(DP), DIMENSION(11, Nx, Ny)        :: RESULTS
-REAL(DP), ALLOCATABLE                  :: OBS(:,:), SYN(:,:), SCAT(:,:)
-REAL(DP), ALLOCATABLE                  :: DSYN(:, :,:)
-REAL(DP), ALLOCATABLE                  :: FILTERS(:,:)
-REAL(DP), DIMENSION(11)                :: MODEL, RES
-REAL(DP), DIMENSION(13)                :: ERR
-REAL(DP), DIMENSION(8)                 :: WFILT
-LOGICAL                                :: file_exists
+REAL(DP), ALLOCATABLE              :: OBS(:,:), SYN(:,:), SCAT(:,:)
+REAL(DP), ALLOCATABLE              :: DSYN(:, :,:)
+REAL(DP), ALLOCATABLE              :: FILTERS(:,:)
+REAL(DP), DIMENSION(11)            :: MODEL, RES
+REAL(DP), DIMENSION(13)            :: ERR
+REAL(DP), DIMENSION(8)             :: WFILT
+LOGICAL                            :: file_exists
 
  ! ------ Read main input file and atomic line file
-
   CALL READ_INPUT
   CALL READ_LINE
  Nfilt = Nfilts
@@ -38,9 +39,9 @@ LOGICAL                                :: file_exists
   ALLOCATE(DSYN(11, NFILT, 4), FILTERS(NUMW, NFILT))
   ALLOCATE(OBS(NFILT, 4), SYN(NFILT, 4), SCAT(NFILT, 4))
   FILTERS(:,:) = 0D0
-
  ! ------ Read instrument filter profiles
   CALL READ_FILT(FILTERS)
+
   if (DEBUG) then
       PRINT*, ' --- Reading filter profiles from:'
       PRINT*, '          ', FILT_PATH
