@@ -18,10 +18,24 @@
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   IDL_VPTR vptr_observations = argv[0];
-  IDL_VPTR vptr_results, vptr_synthetic;
+  IDL_VPTR vptr_results, vptr_synthetic, vptr_status;
+  int status_present;
   double *observations, *results, *synthetic;
-  int width, height, n_filters, status;
+  int n_args, width, height, n_filters, status;
   IDL_MEMINT results_dims[3];
+
+  typedef struct {
+    IDL_KW_RESULT_FIRST_FIELD;
+    IDL_VPTR status;
+    int status_present;
+  } KW_RESULT;
+
+  static IDL_KW_PAR kw_pars[] = {
+    { "STATUS", IDL_TYP_LONG, 1, IDL_KW_OUT,
+      IDL_KW_OFFSETOF(status_present), IDL_KW_OFFSETOF(status) },
+    { NULL },
+  };
+  KW_RESULT kw;
 
   IDL_ENSURE_ARRAY(vptr_observations);
   IDL_ENSURE_SIMPLE(vptr_observations);
@@ -33,6 +47,8 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
     IDL_Message(IDL_M_NAMED_GENERIC, IDL_MSG_LONGJMP, "image cube must be of type double");
   }
 
+  n_args = IDL_KWProcessByOffset(argc, argv, argk, kw_pars, (IDL_VPTR *) NULL, 1, &kw);
+
   observations = (double *) vptr_observations->value.arr->data;
   n_filters = vptr_observations->value.arr->dim[0];
   width = vptr_observations->value.arr->dim[2];
@@ -43,6 +59,14 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   results_dims[1] = width;
   results_dims[2] = height;
   vptr_results = IDL_ImportArray(3, results_dims, IDL_TYP_DOUBLE, (UCHAR *) results, NULL, NULL);
+
+  if (kw.status_present) {
+    kw.status->type = IDL_TYP_LONG;
+    kw.status->value.l = status;
+  }
+
+  IDL_KW_FREE;
+
   return(vptr_results);
 }
 

@@ -32,6 +32,6 @@ pro hexic_invert_example, use_save=use_save
     save, observations, filename='observations.sav'
   endelse
 
-  results = hexic_invert(observations)
-  help, results
+  results = hexic_invert(observations, status=status)
+  help, results, status
 end
