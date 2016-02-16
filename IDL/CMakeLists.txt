@@ -42,4 +42,6 @@ if (BUILD_IDL_BINDINGS)
           DESTINATION lib)
   install(FILES hexic_invert_example.pro
           DESTINATION examples)
+  install(FILES observations.sav
+          DESTINATION examples)
 endif ()
