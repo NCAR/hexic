@@ -4,6 +4,10 @@ MODULE CONS_PARAM
   ! Dec 14, 2009
   ! HAO-NCAR for HMI-Stanford
   !
+
+  ! set DEBUG to print debugging output
+  logical, parameter :: DEBUG = .false.
+
   INTEGER,          PARAMETER  :: DP = KIND(1.D0)
   INTEGER,          PARAMETER  :: SP = KIND(1.)
   REAL(DP),   PARAMETER :: DPI = 3.141592653589793238462643

@@ -6,17 +6,17 @@ MODULE INV_UTILS
   !
   ! Massive changes!!!
 
-  ! By RCE (June 8, 2010): in  SUBROUTINE SVDSOL(DMODEL, CONV_FLAG) added 
-  ! conv_flag to flag the convergence of the SVD solving routine. If SVD 
-  ! doesn't converge, then CONV_FLAG takes value 0. Changes propagate into SVDCMP.f90. 
-  ! This flag is an indication for INVERT to set the results of the inversions 
+  ! By RCE (June 8, 2010): in  SUBROUTINE SVDSOL(DMODEL, CONV_FLAG) added
+  ! conv_flag to flag the convergence of the SVD solving routine. If SVD
+  ! doesn't converge, then CONV_FLAG takes value 0. Changes propagate into SVDCMP.f90.
+  ! This flag is an indication for INVERT to set the results of the inversions
   ! to NaN for a particular pixel.
   !
   ! By RCE, Jan 2011: fixed a bug in the GET_ERROR routine.
 
 CONTAINS
 
-  
+
   !----------------------------------------------------
    SUBROUTINE GET_CHI2(MODEL,SYN,OBS,C2)
     !
@@ -31,10 +31,10 @@ CONTAINS
     REAL(DP), INTENT(OUT)                      :: C2
     REAL(DP), DIMENSION(1)                     :: DUM
     INTEGER                                    :: I
-    
+
     C2 = 0D0
 
-    DO I=1,4    
+    DO I=1,4
       C2 = C2+(1D0/NUMFREE_DEG)*((WEIGHTS(I)/NOISE(I))**2D0)*SUM(((OBS(:,I)-SYN(:,I)))**2D0)
 !      C2 = C2+(WEIGHTS(I)**2D0)*SUM(((OBS(:,I)-SYN(:,I)))**2D0)
 
@@ -45,8 +45,8 @@ CONTAINS
   !------------------------------------------------------
 
   SUBROUTINE NORMALIZE_DSYN(DSYN)
-    ! 
-    ! By RCE, May 20, 2011: We use the NORM vector initialized in 
+    !
+    ! By RCE, May 20, 2011: We use the NORM vector initialized in
     ! LIM_INIT
     !
     USE CONS_PARAM
@@ -74,7 +74,7 @@ CONTAINS
     REAL(DP),  INTENT(INOUT),  DIMENSION(10,NFILT,4)   :: DSYN
     INTEGER                                           :: I
     DO I=1,10
-       IF (FREE(I).EQV..FALSE.) THEN 
+       IF (FREE(I).EQV..FALSE.) THEN
           DSYN(I,:,:) = 0D0
        ENDIF
     ENDDO
@@ -106,12 +106,12 @@ CONTAINS
   !
   ! Routine that computes the divergence of chi2
   ! The divergence is -1/2*partial(chi2)/partial(parameter)
-  ! So although the derivative has a negative sign, the 
+  ! So although the derivative has a negative sign, the
   ! divergence doesn't
   ! JS: Yet, the factor 1/2 appears not to have been applied below.
   ! Similarly the Hessian does not have a factor of 1/2, so math
   ! appears consistent, but comments not.
-  
+
   SUBROUTINE GET_DIVC(SYN, OBS, DSYN, DIVC)
     !
     USE CONS_PARAM
@@ -206,10 +206,10 @@ CONTAINS
 
     MODEL(8) = MAX(S0,0.15D0*SS) ! Use S0+S1 instead of ICONT
     MODEL(9) = SS-MODEL(8) ! Keep sum unchanged
-    
+
 
     ! Check the angles independently so that they vary between 0 and 180.
- 
+
     ! All negatives Inclination treated here to be positive and between 0,PI
     IF (MODEL(2).LT.-360D0) THEN
        REV=ABS((INT(MODEL(2)/360D0)))
@@ -237,8 +237,8 @@ CONTAINS
        MODEL(3)=MODEL(3)+360D0*REV
     ENDIF
     IF (MODEL(3).LT.-180) MODEL(3)=MODEL(3)+180D0
-    IF (MODEL(3).LT.0) MODEL(3)=MODEL(3)+180D0    
- 
+    IF (MODEL(3).LT.0) MODEL(3)=MODEL(3)+180D0
+
   END SUBROUTINE FINE_TUNE_MODEL
   !
   !--------------------------------------------------------
@@ -259,7 +259,7 @@ CONTAINS
     REAL(DP), INTENT(INOUT), DIMENSION(NUMFREE_PARAM,NUMFREE_PARAM) :: HESS
     REAL(DP)                                                        :: HELP
     INTEGER                                                         :: I, J, K
- 
+
     DO I=1,NUMFREE_PARAM
        DO J=1,I
           HELP=0D0
@@ -312,7 +312,9 @@ CONTAINS
    ,NUMFREE_PARAM,VT,NUMFREE_PARAM,WORK,15*NUMFREE_PARAM,INFO)
 
     IF (INFO.NE.0) THEN
-       PRINT*,'ERROR IN SVD'
+       if (DEBUG) then
+           PRINT*,'ERROR IN SVD'
+       endif
        CONV_FLAG = 1
     ELSE
        CONV_FLAG=0
@@ -322,17 +324,17 @@ CONTAINS
        !      V(i,j) = VT(j,i)
        !   ENDDO
        ! ENDDO
-   
+
        WMAX=MAXVAL(W)
        DO I=1,NUMFREE_PARAM
           IF (W(I).LT.SVDTOL*WMAX) W(I)=0D0
        ENDDO
-   
+
 
        ! Calling numerical recipes backsubstitution routine. NEED TO FIND LAPACK ALTERNATIVE.
        ! CALL SVBKSB(U,W,V,NUMFREE_PARAM,NUMFREE_PARAM,NUMFREE_PARAM, &
        !     NUMFREE_PARAM,DIVC1,PLUSMODEL)
-   
+
        CALL SOLVE_SVD(U,W,VT,NUMFREE_PARAM,DIVC1,PLUSMODEL)
 
        DO I=1,NUMFREE_PARAM
@@ -349,7 +351,7 @@ CONTAINS
   !
   !------------------------------------------------------------
   !
- 
+
   PURE SUBROUTINE NORMALIZE_DMODEL(DMODEL)
     !
     ! By RCE, April 2012: normalization vector defined in LIM_INIT
@@ -393,16 +395,16 @@ CONTAINS
        IF (ABS(DMODEL(I)) .GT. ABS(DLIMIT(I))) DMODEL(I) = DMODEL(I)/ABS(DMODEL(I))*DLIMIT(I)
 
     ENDDO
-    !   
+    !
   END SUBROUTINE CUT_DMODEL
   !
   !------------------------------------------------------------
   !
   SUBROUTINE GET_ERR(HESS, CHI2,SIGMA,CONV_FLAG)
-  ! 
-  ! The variances and co-variances are the elements of the inverse of the 
+  !
+  ! The variances and co-variances are the elements of the inverse of the
   ! Hessian matrix when the algorithm has converged. The errors are scaled
-  ! by chi2 over the number of degrees of freedom. 
+  ! by chi2 over the number of degrees of freedom.
 
     USE CONS_PARAM
     USE INV_PARAM
@@ -427,7 +429,9 @@ CONTAINS
     CALL DGESVD('A','A',NUMFREE_PARAM,NUMFREE_PARAM,HESS,NUMFREE_PARAM, &
          W,U,NUMFREE_PARAM,VT,NUMFREE_PARAM,WORK,15*NUMFREE_PARAM,INFO)
     IF (INFO.NE.0) THEN
-       PRINT*,'ERROR IN SVD'
+       if (DEBUG) then
+           PRINT*,'ERROR IN SVD'
+       endif
        CONV_FLAG=1
        SIGMA = 0D0
     ELSE
@@ -470,5 +474,5 @@ CONTAINS
     ENDIF
   END SUBROUTINE GET_ERR
   !-------------------------------------------
-  
+
 END MODULE INV_UTILS

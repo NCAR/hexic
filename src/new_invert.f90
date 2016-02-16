@@ -20,7 +20,7 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
   REAL(DP),        DIMENSION(NFILT,4)   :: OBS, SCAT
   REAL(DP),        DIMENSION(10,ITER)   :: MODEL
 
-  REAL(DP),        DIMENSION(10)        :: BESTMODEL, MODELG, LASTGOODMODEL 
+  REAL(DP),        DIMENSION(10)        :: BESTMODEL, MODELG, LASTGOODMODEL
   REAL(DP),        DIMENSION(10)        :: DMODEL, BESTMINMODEL
   REAL(DP),        DIMENSION(16)        :: SIGMA
   REAL(DP)                              :: BESTCHI2, LASTGOODCHI2, NEWCHI2
@@ -29,42 +29,44 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
   REAL(DP),     DIMENSION(10,NFILT,4)   :: DSYN, LASTGOODDSYN
   REAL(DP),     DIMENSION(ITER)         :: LAMBDA, CHI2
   REAL(DP),     ALLOCATABLE             :: HESS(:,:), DIVC(:)
-  REAL(DP)                              :: TOTPOL, ICONT 
+  REAL(DP)                              :: TOTPOL, ICONT
   REAL(DP)                              :: LASTGOODLAMBDA, LAMBDAX
   INTEGER                               :: I, J, K, M, NRESET
   INTEGER                               :: DONE, ITSTART, ABANDON
-  INTEGER                               :: CONV_FLAG, CONVERGENCE_FLAG, CHANGEVAR_FLAG 
+  INTEGER                               :: CONV_FLAG, CONVERGENCE_FLAG, CHANGEVAR_FLAG
   INTEGER                               :: RESET_FLAG, LAMBDA_EXIT_FLAG
   CHARACTER(LEN=20), PARAMETER          :: FMT = '("6f14.10")'
 ! ------------------    Some variables for random number initialization
   INTEGER                               :: dt_return(1:8), nseed,clock_count
   INTEGER, dimension(:), allocatable    :: seed
 
-! Allocate memory for the Hessian matrix and the divergence vector. 
+! Allocate memory for the Hessian matrix and the divergence vector.
   ALLOCATE(HESS(NUMFREE_PARAM,NUMFREE_PARAM),DIVC(NUMFREE_PARAM))
 
 ! Continuum intensity
 
   ICONT = MAXVAL(OBS(:,1))
-  PRINT*, ' --- ICONT = ', ICONT
+  if (DEBUG) then
+      PRINT*, ' --- ICONT = ', ICONT
+  endif
 
   ! ----- FLAGS FOR THE CODE
-  ! By RCE: 
-  ! CONVERGENCE_FLAG is sent out to the wrapper with different values depending 
+  ! By RCE:
+  ! CONVERGENCE_FLAG is sent out to the wrapper with different values depending
   !   on whether the algorithm converges or not and why.
   ! CHANGEVAR_FLAG decides whether variable change for inversion is implemented (1) or not (0).
-  
+
   CONVERGENCE_FLAG = 0
   CHANGEVAR_FLAG = 0 ! Use new variables or not
   ! ---- END FLAGS
 
- 
+
 
   !--- Get seed for random generator
   ! Both values increment with time, so not entirely independent
   CALL date_and_time(values=dt_return)
   CALL system_clock(count=clock_count,count_rate=i,count_max=j)
-  
+
 !  CALL random_seed(size=nseed)
 !  ALLOCATE(seed(1:nseed))
 !  seed(:) = dt_return(8) ! Milliseconds of system clock
@@ -79,8 +81,8 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
 !     CALL GET_TOTPOL(OBS,TOTPOL)
 
      !----------------------------------------------------
-     ! Commented by RCE: 
-     ! WFA_GUESS overwrites initial guess for Doppler velocity 
+     ! Commented by RCE:
+     ! WFA_GUESS overwrites initial guess for Doppler velocity
      ! eta0, doppler width, azimuth, source function and gradient.
      !----------------------------------------------------
 
@@ -119,7 +121,7 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
      !-----------------------------
      ! Start LOOP iteration
      !-----------------------------
-     DO WHILE ((I.LT.ITER).and.(DONE.EQ.0))       
+     DO WHILE ((I.LT.ITER).and.(DONE.EQ.0))
 
         ! Restart with new guess?
         IF (RESET_FLAG .NE. 0) THEN
@@ -144,7 +146,9 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
 
         ! Checking for NAN in NEWCHI2
         IF (NEWCHI2.EQ.NEWCHI2+1D0) THEN
-           PRINT*,'NaN detected in Subroutine GETCHI2'
+           if (DEBUG) then
+               PRINT*,'NaN detected in Subroutine GETCHI2'
+           endif
            NEWCHI2=2*LASTGOODCHI2
         ENDIF
         CHI2(I) = NEWCHI2
@@ -162,7 +166,7 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
            CALL NORMALIZE_DSYN(DSYN)
            ! Set to Zero unneeded derivatives
            CALL ZERO_DSYN(DSYN)
-           
+
            LASTGOODLAMBDA = LAMBDA(I)
            LASTGOODMODEL = MODEL(:,I)
            LASTGOODCHI2 = NEWCHI2
@@ -184,11 +188,11 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
 
         ! Levenberg-Marquardt lambda factor
         CALL GET_LAMBDA(DELTACHI2, LAMBDA(I), LAMBDA(I+1))
-    
+
         ! Getting Divergence and Hessian
         CALL GET_DIVC(LASTGOODSYN, OBS, LASTGOODDSYN, DIVC)
         CALL GET_HESS(LASTGOODDSYN, HESS)
-     
+
         ! Get perturbations to old model
         CALL GET_DMODEL(LASTGOODMODEL, DIVC, HESS, LAMBDA(I+1), DMODEL, CONV_FLAG)
         ! Ignore CONV_FLAG and rely on DMODEL set to zero/LAMBDA increase.
@@ -214,28 +218,30 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
 
         ! A given restart is not getting better. Start a new one:
      !   IF ((NRESET .NE. 0) .AND. ((i-itstart) .GE. N_ABANDON) &
-     !        .AND. ((LASTGOODCHI2-BESTMINCHI2) .GT. 0)) RESET_FLAG = 1 
+     !        .AND. ((LASTGOODCHI2-BESTMINCHI2) .GT. 0)) RESET_FLAG = 1
 
         ! If lambda becomes too big and the number of resets is larger than 5, we give up!
         IF ((NRESET .GT. 5) .AND. (LAMBDA(I+1) .GE. LAMBDA_MAX)) DONE = 1
         ! If the best chi2 is too high after N_ABANDON (=5) iterations
 !s        IF ((NRESET.EQ.0) .AND. (I .GT. N_ABANDON) .AND. (BESTCHI2 .GT. 20.00)) RESET_FLAG = 1
-            
+
         IF (LAMBDA_EXIT_FLAG .GT. 4) DONE = 1
         I=I+1
      ENDDO ! ----------- END  Main iteration loop
 
-     PRINT*, '     -- Enforced ', NRESET, ' restarts'
+     if (DEBUG) then
+         PRINT*, '     -- Enforced ', NRESET, ' restarts'
+     endif
 
      ! Get errors
      IF (BESTCHI2.gt.1d20) THEN
         CONVERGENCE_FLAG = 4 ! Set flag and give up
      ELSE
-       
+
         ! We compute the derivatives with the best model parameters (without
         ! doing the change of variable afterwards), and we compute the Hessian
         ! and the errors from there.
-        
+
         ! Recalculate chi2 and derivatives. No regularization.
         ! JS: Not clear why NEWCHI2 is recalculated.
         CALL GET_CHI2(BESTMODEL, BESTSYN, OBS, NEWCHI2)
@@ -266,13 +272,13 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
 
         ! Final Result
         RES = BESTMODEL
-        
+
         ! By RCE, Apr 23, 2010: Juanma's correction to azimuth (which is
         ! rotated by 90 degrees with respect to the convention people want).
 !        RES(3) = RES(3) + 90D0
 !        IF (RES(3) .GT. 180D0) RES(3) = RES(3) - 180D0
 
-        IF ((I .EQ. ITER).and.(NRESET.eq.0)) THEN 
+        IF ((I .EQ. ITER).and.(NRESET.eq.0)) THEN
            CONVERGENCE_FLAG = 2 ! Not converged
         ELSE
            CONVERGENCE_FLAG = 0 ! Found at least one local minimum.
@@ -283,5 +289,5 @@ SUBROUTINE NEW_INVERT(OBS, SCAT, GUESS, RES, ERR, CONVERGENCE_FLAG, FILTERS)
      CONVERGENCE_FLAG = 1
 
   ENDIF !(Icont GT intensity threshold)
-     
+
 END SUBROUTINE NEW_INVERT

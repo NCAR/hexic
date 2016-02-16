@@ -41,8 +41,10 @@ LOGICAL                                :: file_exists
 
  ! ------ Read instrument filter profiles
   CALL READ_FILT(FILTERS)
-  PRINT*, ' --- Reading filter profiles from:'
-  PRINT*, '          ', FILT_PATH
+  if (DEBUG) then
+      PRINT*, ' --- Reading filter profiles from:'
+      PRINT*, '          ', FILT_PATH
+  endif
 
  ! ------ Read (guess) model atmosphere
   CALL READ_MODEL(MODEL)
@@ -76,11 +78,11 @@ LOGICAL                                :: file_exists
            ! ************** These following two calls should be deprecated *************
            ! CALL WRITE_SYN(SYN)
            ! CALL WRITE_ATMOS(RES)
-
-           PRINT*, ' --- RESULTS = ', RES(1:4)
-           PRINT*, '               ', RES(5:8)
-           PRINT*, '               ', RES(9:10)
-
+           if (DEBUG) THEN
+               PRINT*, ' --- RESULTS = ', RES(1:4)
+               PRINT*, '               ', RES(5:8)
+               PRINT*, '               ', RES(9:10)
+           endif
         ENDDO ! Loop in pixels along X-direction
      ENDDO  ! Loop in pixels along Y-direction
 
@@ -89,12 +91,14 @@ LOGICAL                                :: file_exists
      CALL READ_MODEL(MODEL)
      CALL SYNTHESIS(MODEL, SCAT, .FALSE., SYN, DSYN, FILTERS)
      CALL WRITE_SYN(SYN)
-     PRINT*, '  '
+     if (DEBUG) then
+         PRINT*, '  '
 
-     PRINT*, ' --- Synthetic profiles written in: '
-     PRINT*, '   ', SYN_PATH
-     PRINT*, ' ... according to model atmosphere from: '
-     PRINT*, '   ', ATMOSIN_PATH
+         PRINT*, ' --- Synthetic profiles written in: '
+         PRINT*, '   ', SYN_PATH
+         PRINT*, ' ... according to model atmosphere from: '
+         PRINT*, '   ', ATMOSIN_PATH
+    endif
 
   ENDIF
 
