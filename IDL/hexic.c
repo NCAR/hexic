@@ -17,22 +17,27 @@
 
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
+  int n_args, width, height, n_filters, status;
+  double *observations, *results, *synthetic;
   IDL_VPTR vptr_observations = argv[0];
   IDL_VPTR vptr_results, vptr_synthetic, vptr_status;
-  int status_present;
-  double *observations, **results, **synthetic;
-  int n_args, width, height, n_filters, status;
-  IDL_MEMINT results_dims[3];
+  IDL_MEMINT results_dims[IDL_MAX_ARRAY_DIM];
+  IDL_MEMINT synthetic_dims[IDL_MAX_ARRAY_DIM];
+  IDL_ARRAY *synthetic_array;
 
   typedef struct {
     IDL_KW_RESULT_FIRST_FIELD;
     IDL_VPTR status;
     int status_present;
+    IDL_VPTR synthetic;
+    int synthetic_present;
   } KW_RESULT;
 
   static IDL_KW_PAR kw_pars[] = {
     { "STATUS", IDL_TYP_LONG, 1, IDL_KW_OUT,
       IDL_KW_OFFSETOF(status_present), IDL_KW_OFFSETOF(status) },
+    { "SYNTHETIC", IDL_TYP_DOUBLE, 1, IDL_KW_OUT,
+      IDL_KW_OFFSETOF(synthetic_present), IDL_KW_OFFSETOF(synthetic) },
     { NULL },
   };
   KW_RESULT kw;
@@ -54,11 +59,34 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   width = vptr_observations->value.arr->dim[2];
   height = vptr_observations->value.arr->dim[3];
 
-  status = hexic_invert(observations, width, height, n_filters, results, synthetic);
+  status = hexic_invert(observations, width, height, n_filters, &results, &synthetic);
+
   results_dims[0] = 11;
   results_dims[1] = width;
   results_dims[2] = height;
-  vptr_results = IDL_ImportArray(3, results_dims, IDL_TYP_DOUBLE, (UCHAR *) *results, NULL, NULL);
+  vptr_results = IDL_ImportArray(3, results_dims, IDL_TYP_DOUBLE, (UCHAR *) results, (IDL_ARRAY_FREE_CB) free, NULL);
+
+  if (kw.synthetic_present) {
+    kw.synthetic->type = IDL_TYP_DOUBLE;
+    kw.synthetic->flags = IDL_V_ARR;
+
+    synthetic_array = (IDL_ARRAY *) calloc(sizeof(IDL_ARRAY), 1);
+    synthetic_array->elt_len = 8;
+    synthetic_array->arr_len = 8 * n_filters * 4 * width * height;
+    synthetic_array->n_elts = n_filters * 4 * width * height;
+
+    synthetic_array->data = (UCHAR *) synthetic;
+
+    synthetic_array->n_dim = 4;
+    synthetic_array->dim[0] = n_filters;
+    synthetic_array->dim[1] = 4;
+    synthetic_array->dim[2] = width;
+    synthetic_array->dim[3] = height;
+
+    synthetic_array->free_cb = (IDL_ARRAY_FREE_CB) free;
+
+    kw.synthetic->value.arr = synthetic_array;
+  }
 
   if (kw.status_present) {
     kw.status->type = IDL_TYP_LONG;

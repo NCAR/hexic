@@ -17,7 +17,7 @@ real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: RESULTS(11, dimX, dimY)
 
-INTEGER                            :: k, l, s, p, convergence_flag, i
+INTEGER                            :: k, l, s, p, convergence_flag
 ! The next two variables will be passed through the header
 REAL(DP), ALLOCATABLE              :: OBS(:,:), SYN(:,:), SCAT(:,:)
 REAL(DP), ALLOCATABLE              :: DSYN(:, :,:)
