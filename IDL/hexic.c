@@ -20,7 +20,7 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   IDL_VPTR vptr_observations = argv[0];
   IDL_VPTR vptr_results, vptr_synthetic, vptr_status;
   int status_present;
-  double *observations, *results, *synthetic;
+  double *observations, **results, **synthetic;
   int n_args, width, height, n_filters, status;
   IDL_MEMINT results_dims[3];
 
@@ -58,7 +58,7 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   results_dims[0] = 11;
   results_dims[1] = width;
   results_dims[2] = height;
-  vptr_results = IDL_ImportArray(3, results_dims, IDL_TYP_DOUBLE, (UCHAR *) results, NULL, NULL);
+  vptr_results = IDL_ImportArray(3, results_dims, IDL_TYP_DOUBLE, (UCHAR *) *results, NULL, NULL);
 
   if (kw.status_present) {
     kw.status->type = IDL_TYP_LONG;

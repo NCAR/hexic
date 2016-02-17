@@ -9,7 +9,7 @@
 
 static PyObject *py_hexic_invert(PyObject *self, PyObject *args) {
   PyArrayObject *observations_array = NULL;
-  double *observations, *results, *synthetic;
+  double *observations, **results, **synthetic;
   npy_intp *shape;
   PyArray_Descr *dtype;
   int status;

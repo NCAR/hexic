@@ -1,4 +1,4 @@
-SUBROUTINE run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC)
+integer function run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC)
 
 use iso_c_binding, only: c_double, c_int
 
@@ -17,7 +17,7 @@ real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: RESULTS(11, dimX, dimY)
 
-INTEGER                            :: k, l, s, p, convergence_flag
+INTEGER                            :: k, l, s, p, convergence_flag, i
 ! The next two variables will be passed through the header
 REAL(DP), ALLOCATABLE              :: OBS(:,:), SYN(:,:), SCAT(:,:)
 REAL(DP), ALLOCATABLE              :: DSYN(:, :,:)
@@ -102,6 +102,5 @@ LOGICAL                            :: file_exists
     endif
 
   ENDIF
-
-
-END SUBROUTINE run_hexic
+  run_hexic = 1
+END function run_hexic
