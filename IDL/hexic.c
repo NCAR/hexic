@@ -86,6 +86,8 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
     synthetic_array->free_cb = (IDL_ARRAY_FREE_CB) free;
 
     kw.synthetic->value.arr = synthetic_array;
+  } else {
+    free(synthetic);
   }
 
   if (kw.status_present) {
