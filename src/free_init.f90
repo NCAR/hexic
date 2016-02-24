@@ -1,4 +1,4 @@
-SUBROUTINE FREE_INIT 
+SUBROUTINE FREE_INIT
   !
   ! J M Borrero
   ! Dec 14, 2009
@@ -28,8 +28,13 @@ SUBROUTINE FREE_INIT
         NUMFREE_DEG = NUMFREE_DEG - 1
      ENDIF
   ENDDO
-  
-  ALLOCATE (FREELOC(NUMFREE_PARAM))
+
+  ! deallocate freeloc if already allocated from a previous run
+  if (allocated(freeloc)) then
+    deallocate(freeloc)
+  endif
+
+  ALLOCATE(freeloc(NUMFREE_PARAM))
   J = 1
   DO I = 1,10
      IF (FREE(I).EQV..TRUE.) THEN

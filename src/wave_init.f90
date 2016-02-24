@@ -1,4 +1,4 @@
-SUBROUTINE WAVE_INIT 
+SUBROUTINE WAVE_INIT
   !
   ! J M Borrero
   ! Dec 14, 2009
@@ -9,10 +9,14 @@ SUBROUTINE WAVE_INIT
   IMPLICIT NONE
 
   INTEGER              :: I
-  !
 
-  ALLOCATE (WAVE(NUMW))
-  !
+  ! deallocate wave if already allocated from a previous run
+  if (allocated(wave)) then
+    deallocate(wave)
+  endif
+
+  ALLOCATE(WAVE(NUMW))
+
   DO I=1,NUMW
      WAVE(I)=LAM_START+DBLE(I-1)*STEPW
   ENDDO
