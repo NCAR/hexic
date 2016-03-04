@@ -28,4 +28,5 @@ add_subdirectory(include)
 add_subdirectory(src)
 
 add_subdirectory(IDL)
-add_subdirectory(Python)
+# TODO: turn off Python bindings while we focus on IDL bindings
+#add_subdirectory(Python)

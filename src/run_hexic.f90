@@ -1,4 +1,4 @@
-integer function run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC)
+integer function run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, IN_MODEL, IN_FREE)
 
 use iso_c_binding, only: c_double, c_int
 
@@ -15,14 +15,16 @@ IMPLICIT NONE
 integer(c_int), intent(in)         :: Nfilts, dimX, dimY
 real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
-real(c_double), intent(out)        :: RESULTS(11, dimX, dimY)
+real(c_double), intent(out)        :: RESULTS(10, dimX, dimY)
+real(c_double), intent(in)         :: IN_MODEL(10)
+integer(c_int), intent(in)         :: IN_FREE(10)
 
 INTEGER                            :: k, l, s, p, convergence_flag
 ! The next two variables will be passed through the header
 REAL(DP), ALLOCATABLE              :: OBS(:,:), SYN(:,:), SCAT(:,:)
 REAL(DP), ALLOCATABLE              :: DSYN(:, :,:)
 REAL(DP), ALLOCATABLE              :: FILTERS(:,:)
-REAL(DP), DIMENSION(11)            :: MODEL, RES
+REAL(DP), DIMENSION(10)            :: MODEL, RES
 REAL(DP), DIMENSION(13)            :: ERR
 REAL(DP), DIMENSION(8)             :: WFILT
 LOGICAL                            :: file_exists
@@ -48,7 +50,7 @@ LOGICAL                            :: file_exists
   endif
 
  ! ------ Read (guess) model atmosphere
-  CALL READ_MODEL(MODEL)
+  MODEL(:) = IN_MODEL(:)
  ! ------ Read Scattered light profile
   CALL READ_SCAT(SCAT)
 
@@ -56,10 +58,8 @@ LOGICAL                            :: file_exists
  ! ------ Initialize wavelength vector, free inversion model parameters
   CALL WAVE_INIT
   IF (mode .EQ. 'i') THEN
-     CALL FREE_INIT
+     CALL FREE_INIT(IN_FREE)
   ENDIF
-
-
 
   IF (MODE .EQ. 'i') THEN ! INVERSION MODE
 
@@ -89,7 +89,6 @@ LOGICAL                            :: file_exists
 
   ELSE ! SYNTHESIS MODE: calculate Stokes profiles from model atmosphere
      ! The synthesis is typically not in a loop. Should be run for Nx=1 and Ny=1.
-     CALL READ_MODEL(MODEL)
      CALL SYNTHESIS(MODEL, SCAT, .FALSE., SYN, DSYN, FILTERS)
      CALL WRITE_SYN(SYN)
      if (DEBUG) then

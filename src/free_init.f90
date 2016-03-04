@@ -1,4 +1,4 @@
-SUBROUTINE FREE_INIT
+SUBROUTINE FREE_INIT(LIST_FREE_PARAMS)
   !
   ! J M Borrero
   ! Dec 14, 2009
@@ -12,14 +12,9 @@ SUBROUTINE FREE_INIT
   INTEGER, DIMENSION(10)         :: LIST_FREE_PARAMS
   INTEGER                        :: I,J
 
-  !
   FREE(:) = .FALSE.
   NUMFREE_PARAM = 0
   NUMFREE_DEG = 4 * NFILT
-  LIST_FREE_PARAMS(:) = 0
-  !
-
-  CALL READ_FREE(LIST_FREE_PARAMS)
 
   DO I=1,10
      IF (LIST_FREE_PARAMS(I).EQ.1) THEN
@@ -42,8 +37,6 @@ SUBROUTINE FREE_INIT
         J = J+1
      ENDIF
   ENDDO
-
-
 
   !FREE(1)                                    ! ETA0
   !FREE(2)                                    ! FIELD INCLINATION

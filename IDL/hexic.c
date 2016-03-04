@@ -27,6 +27,10 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
 
   typedef struct {
     IDL_KW_RESULT_FIRST_FIELD;
+    IDL_VPTR free;
+    int free_present;
+    IDL_VPTR model;
+    int model_present;
     IDL_VPTR status;
     int status_present;
     IDL_VPTR synthetic;
@@ -34,6 +38,10 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   } KW_RESULT;
 
   static IDL_KW_PAR kw_pars[] = {
+    { "FREE", IDL_TYP_LONG, 1, IDL_KW_VIN,
+      IDL_KW_OFFSETOF(free_present), IDL_KW_OFFSETOF(free) },
+    { "MODEL", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
+      IDL_KW_OFFSETOF(model_present), IDL_KW_OFFSETOF(model) },
     { "STATUS", IDL_TYP_LONG, 1, IDL_KW_OUT,
       IDL_KW_OFFSETOF(status_present), IDL_KW_OFFSETOF(status) },
     { "SYNTHETIC", IDL_TYP_DOUBLE, 1, IDL_KW_OUT,
@@ -59,7 +67,10 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   width = vptr_observations->value.arr->dim[2];
   height = vptr_observations->value.arr->dim[3];
 
-  status = hexic_invert(observations, width, height, n_filters, &results, &synthetic);
+  status = hexic_invert(observations, width, height, n_filters,
+                        &results, &synthetic,
+                        (double *) kw.model->value.arr->data,
+                        (int *) kw.free->value.arr->data);
 
   results_dims[0] = 11;
   results_dims[1] = width;
