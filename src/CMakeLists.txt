@@ -1,4 +1,5 @@
 find_package(LAPACK REQUIRED)
+find_package(OpenMP_Fortran)
 
 set(main_src
     main.f90)
@@ -16,10 +17,10 @@ set(f90_srcs
     new_invert.f90
     ran_mod.f90
     read_filt.f90
-    read_free.f90
+#    read_free.f90
     read_input.f90
     read_line.f90
-    read_model.f90
+#    read_model.f90
     read_noise.f90
 #    read_obs.f90
     read_scat.f90
@@ -45,11 +46,19 @@ add_library(hexic-objects OBJECT
             ${f_srcs}
             ${f90_srcs})
 
+set_target_properties(hexic-objects
+  PROPERTIES
+    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
+)
+
 add_library(chexic-shared SHARED ${c_wrapper} $<TARGET_OBJECTS:hexic-objects>)
 set_target_properties(chexic-shared
   PROPERTIES
     OUTPUT_NAME libchexic
     PREFIX ""
+    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 add_library(chexic-static STATIC ${c_wrapper} $<TARGET_OBJECTS:hexic-objects>)
@@ -57,6 +66,8 @@ set_target_properties(chexic-static
   PROPERTIES
     OUTPUT_NAME libchexic
     PREFIX ""
+    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 add_library(hexic-shared SHARED $<TARGET_OBJECTS:hexic-objects>)
@@ -64,6 +75,8 @@ set_target_properties(hexic-shared
   PROPERTIES
     OUTPUT_NAME libhexic
     PREFIX ""
+    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 add_library(hexic-static STATIC $<TARGET_OBJECTS:hexic-objects>)
@@ -71,6 +84,8 @@ set_target_properties(hexic-static
   PROPERTIES
     OUTPUT_NAME libhexic
     PREFIX ""
+    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 install(TARGETS chexic-shared
