@@ -48,6 +48,7 @@ add_library(hexic-objects OBJECT
 
 set_target_properties(hexic-objects
   PROPERTIES
+    POSITION_INDEPENDENT_CODE True
     COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
     LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
@@ -66,6 +67,7 @@ set_target_properties(chexic-static
   PROPERTIES
     OUTPUT_NAME libchexic
     PREFIX ""
+    POSITION_INDEPENDENT_CODE True
     COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
     LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
