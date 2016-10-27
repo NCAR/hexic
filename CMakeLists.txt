@@ -21,6 +21,8 @@ include(${CMAKE_SOURCE_DIR}/cmake/GetDate.cmake)
 LONG_TODAY(hexic_BUILD_DATE)
 message(STATUS "Build date = ${hexic_BUILD_DATE}")
 
+option(USE_OPENMP "build application with OpenMP" OFF)
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
 
