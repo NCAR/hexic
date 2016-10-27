@@ -16,7 +16,7 @@ IMPLICIT NONE
   CHARACTER (LEN = 256) :: Line = ' '
   LOGICAL               :: file_exists
 
-  OPEN (UNIT=97, FILE = "/Users/mgalloy/software/hexic/USER_FILES/INPUT.txt", ACTION="read", FORM='formatted')
+  OPEN (UNIT=97, FILE = "/Users/rce/work/HEXIC/GIT/hexic/USER_FILES/INPUT.txt", ACTION="read", FORM='formatted')
      READ (UNIT=97, FMT='(A)') Line
      DO WHILE (SCAN(Line,'!#').GT.0)
         READ(UNIT=97, FMT='(A)') Line
@@ -32,35 +32,7 @@ IMPLICIT NONE
      DO WHILE (TRIM(Line).EQ.'')
         READ(UNIT=97, FMT='(A)') LINE
      ENDDO
-     OBS_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
      ATOM_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
-     SYN_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
-     ATMOSOUT_PATH = Line
-     if (DEBUG) then
-         PRINT*, '     atmosout = ', atmosout_path
-     endif
-
      READ (UNIT=97, FMT='(A)') Line
      DO WHILE (SCAN(Line,'!#').GT.0)
         READ(UNIT=97, FMT='(A)') Line

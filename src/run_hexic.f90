@@ -50,7 +50,7 @@ LOGICAL                            :: file_exists
  ! ------ Read (guess) model atmosphere
   CALL READ_MODEL(MODEL)
  ! ------ Read Scattered light profile
-  CALL READ_SCAT(SCAT)
+ ! CALL READ_SCAT(SCAT)      
 
 
  ! ------ Initialize wavelength vector, free inversion model parameters
@@ -75,12 +75,13 @@ LOGICAL                            :: file_exists
            CALL SYNTHESIS(RES, SCAT, .FALSE., SYN, DSYN, FILTERS)
            SYNTHETIC(:,:, k, l) = SYN(:,:)
            RESULTS(:, k, l) = RES(:)
+          
 
            ! ************** These following two calls should be deprecated *************
            ! CALL WRITE_SYN(SYN)
            ! CALL WRITE_ATMOS(RES)
            if (DEBUG) THEN
-               PRINT*, ' --- RESULTS = ', RES(1:4)
+               PRINT*, ' --- RESULTS ---- = ', RES(1:4)
                PRINT*, '               ', RES(5:8)
                PRINT*, '               ', RES(9:10)
            endif
@@ -91,7 +92,7 @@ LOGICAL                            :: file_exists
      ! The synthesis is typically not in a loop. Should be run for Nx=1 and Ny=1.
      CALL READ_MODEL(MODEL)
      CALL SYNTHESIS(MODEL, SCAT, .FALSE., SYN, DSYN, FILTERS)
-     CALL WRITE_SYN(SYN)
+     !CALL WRITE_SYN(SYN)
      if (DEBUG) then
          PRINT*, '  '
 

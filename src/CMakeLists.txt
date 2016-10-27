@@ -1,4 +1,4 @@
-find_package(LAPACK REQUIRED)
+>find_package(LAPACK REQUIRED)
 
 set(main_src
     main.f90)
@@ -28,9 +28,9 @@ set(f90_srcs
     solve_svd.f90
     wave_init.f90
     wfa_guess.f90
-    write_atmos.f90
+#    write_atmos.f90
     write_filters.f90
-    write_syn.f90
+#    write_syn.f90
     zeeman.f90)
 
 set(f_srcs
