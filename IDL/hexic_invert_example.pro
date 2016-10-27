@@ -32,7 +32,11 @@ pro hexic_invert_example, use_save=use_save
     save, observations, filename='observations.sav'
   endelse
 
-  results = hexic_invert(observations, status=status, synthetic=synthetic)
+  model = [20.0D, 0.0D, 0.0D, 0.5D, 10.0D, 500.0D, 0.0D, 0.1D, 0.9D, 1.0D]
+  free  = [   1L,   1L,   1L,   0L,    1L,     1L,   1L,   1L,   1L,   0L]
+
+  results = hexic_invert(observations, status=status, synthetic=synthetic, $
+                         model=model, free=free)
   help, results, status, synthetic
   print, (observations - synthetic) / observations * 100.0
 end
