@@ -31,10 +31,16 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
     int free_present;
     IDL_VPTR model;
     int model_present;
+    IDL_VPTR noise;
+    int noise_present;
+    IDL_VPTR scattered_light;
+    int scattered_light_present;
     IDL_VPTR status;
     int status_present;
     IDL_VPTR synthetic;
     int synthetic_present;
+    IDL_VPTR weights;
+    int weights_present;
   } KW_RESULT;
 
   static IDL_KW_PAR kw_pars[] = {
@@ -42,10 +48,16 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
       IDL_KW_OFFSETOF(free_present), IDL_KW_OFFSETOF(free) },
     { "MODEL", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
       IDL_KW_OFFSETOF(model_present), IDL_KW_OFFSETOF(model) },
+    { "NOISE", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
+      IDL_KW_OFFSETOF(noise_present), IDL_KW_OFFSETOF(noise) },
+    { "SCATTERED_LIGHT", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
+      IDL_KW_OFFSETOF(scattered_light_present), IDL_KW_OFFSETOF(scattered_light) },
     { "STATUS", IDL_TYP_LONG, 1, IDL_KW_OUT,
       IDL_KW_OFFSETOF(status_present), IDL_KW_OFFSETOF(status) },
     { "SYNTHETIC", IDL_TYP_DOUBLE, 1, IDL_KW_OUT,
       IDL_KW_OFFSETOF(synthetic_present), IDL_KW_OFFSETOF(synthetic) },
+    { "WEIGHTS", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
+      IDL_KW_OFFSETOF(weights_present), IDL_KW_OFFSETOF(weights) },
     { NULL },
   };
   KW_RESULT kw;
@@ -70,6 +82,9 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   status = hexic_invert(observations, width, height, n_filters,
                         &results, &synthetic,
                         (double *) kw.model->value.arr->data,
+                        (double *) (kw.weights_present ? kw.weights->value.arr->data : NULL),
+                        (double *) (kw.noise_present ? kw.noise->value.arr->data : NULL),
+                        (double *) (kw.scattered_light_present ? kw.scattered_light->value.arr->data : NULL),
                         (int *) kw.free->value.arr->data);
 
   results_dims[0] = 11;
