@@ -1,5 +1,8 @@
 find_package(LAPACK REQUIRED)
-find_package(OpenMP_Fortran)
+
+if (USE_OPENMP)
+  find_package(OpenMP_Fortran)
+endif ()
 
 set(main_src
     main.f90)
@@ -17,21 +20,16 @@ set(f90_srcs
     new_invert.f90
     ran_mod.f90
     read_filt.f90
-#    read_free.f90
     read_input.f90
     read_line.f90
-#    read_model.f90
     read_noise.f90
-#    read_obs.f90
     read_scat.f90
     read_weights.f90
     run_hexic.f90
     solve_svd.f90
     wave_init.f90
     wfa_guess.f90
-#    write_atmos.f90
     write_filters.f90
-#    write_syn.f90
     zeeman.f90)
 
 set(f_srcs

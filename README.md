@@ -1,5 +1,18 @@
 # HEXIC
 
+## Building and installation
+
+To do a standard out-of-source build of hexic, from the root directory of the hexic source code, do:
+
+    $ mkdir build
+    $ cd build
+    $ cmake -DCMAKE_INSTALL_PREFIX:PATH=~/software/hexic ..
+
+There is an option to use OpenMP, in which case add `-DUSE_OPENMP:BOOLEAN=TRUE` to this `cmake` configuration line. To finish the build, do:
+
+    $ make install
+
+
 ## December 10, 2015
 
 I am preparing a version of HEXIC to go into the ChroMag pipeline. I will be
