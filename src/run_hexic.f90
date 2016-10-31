@@ -1,4 +1,6 @@
-integer function run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, IN_MODEL, IN_FREE)
+integer function run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, &
+                           IN_MODEL, IN_WEIGHTS, IN_NOISE, IN_SCATTERED_LIGHT, &
+                           IN_FREE)
 
 use iso_c_binding, only: c_double, c_int
 
@@ -17,6 +19,9 @@ real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: RESULTS(10, dimX, dimY)
 real(c_double), intent(in)         :: IN_MODEL(10)
+real(c_double), intent(in)         :: IN_WEIGHTS(4)
+real(c_double), intent(in)         :: IN_NOISE(4)
+real(c_double), intent(in)         :: IN_SCATTERED_LIGHT(Nfilts, 4)
 integer(c_int), intent(in)         :: IN_FREE(10)
 
 INTEGER                            :: k, l, s, p, convergence_flag
