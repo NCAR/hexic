@@ -19,9 +19,9 @@ real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: RESULTS(10, dimX, dimY)
 real(c_double), intent(in)         :: IN_MODEL(10)
-real(c_double), intent(in)         :: IN_WEIGHTS(4)
-real(c_double), intent(in)         :: IN_NOISE(4)
-real(c_double), intent(in)         :: IN_SCATTERED_LIGHT(Nfilts, 4)
+real(c_double), intent(in), optional         :: IN_WEIGHTS(4)
+real(c_double), intent(in), optional         :: IN_NOISE(4)
+real(c_double), intent(in), optional         :: IN_SCATTERED_LIGHT(Nfilts, 4)
 integer(c_int), intent(in)         :: IN_FREE(10)
 
 INTEGER                            :: k, l, s, p, convergence_flag
@@ -37,9 +37,8 @@ LOGICAL                            :: file_exists
  ! ------ Read main input file and atomic line file
   CALL READ_INPUT
   CALL READ_LINE
+
  Nfilt = Nfilts
- Nx = dimX
- Ny= dimY
 
 
  ! ------ Allocate memory for the variables that depend on user input
@@ -56,22 +55,39 @@ LOGICAL                            :: file_exists
 
  ! ------ Read (guess) model atmosphere
   MODEL(:) = IN_MODEL(:)
- ! ------ Read Scattered light profile
- ! CALL READ_SCAT(SCAT)      
 
+ ! ------ Take Scattered light profile from header input
+  IF (.NOT. PRESENT(IN_SCATTERED_LIGHT)) THEN
+     SCAT(:,:) = 0.0
+  ELSE
+     SCAT(:,:) = IN_SCATTERED_LIGHT
+     MODEL(10) = 0.8 !!! CAREFUL - this should not be here. Is it necessary?
+  ENDIF
 
  ! ------ Initialize wavelength vector, free inversion model parameters
   CALL WAVE_INIT
+
   IF (mode .EQ. 'i') THEN
      CALL FREE_INIT(IN_FREE)
+     ! ------ Get weights and noise from user input
+     IF (.NOT. PRESENT(IN_NOISE)) THEN
+        NOISE(:) = 1.0D-3   ! TO DO: Create routine that calculates noise from Observations?
+     ELSE
+        NOISE(:) = IN_NOISE(:)
+     ENDIF
+     IF (.NOT. PRESENT(IN_WEIGHTS)) THEN
+        WEIGHTS = (/1.0, 3.5, 3.5, 2.5/)
+     ELSE
+        WEIGHTS(:) = IN_WEIGHTS(:)
+     ENDIF
   ENDIF
 
   IF (MODE .EQ. 'i') THEN ! INVERSION MODE
 
      ! ------- Loop over all pixels in the FOV. Calls main part of the program NPIX times.
 
-     DO k = 1, Nx
-        DO l = 1, Ny
+     DO k = 1, dimX
+        DO l = 1, dimY
            OBS(:,:) = OBSERVATIONS(:,:,k,l)
            ! Initialize some inversion variables (requires Icont)
            CALL INV_INIT(MAXVAL(OBS(:,1)))
@@ -79,8 +95,7 @@ LOGICAL                            :: file_exists
            CALL NEW_INVERT(OBS, SCAT, MODEL, RES, ERR, CONVERGENCE_FLAG, FILTERS)
            CALL SYNTHESIS(RES, SCAT, .FALSE., SYN, DSYN, FILTERS)
            SYNTHETIC(:,:, k, l) = SYN(:,:)
-           RESULTS(:, k, l) = RES(:)
-          
+           RESULTS(:, k, l) =  RES(:)
 
            ! ************** These following two calls should be deprecated *************
            ! CALL WRITE_SYN(SYN)
@@ -97,15 +112,6 @@ LOGICAL                            :: file_exists
      ! The synthesis is typically not in a loop. Should be run for Nx=1 and Ny=1.
      CALL SYNTHESIS(MODEL, SCAT, .FALSE., SYN, DSYN, FILTERS)
      !CALL WRITE_SYN(SYN)
-     if (DEBUG) then
-         PRINT*, '  '
-
-         PRINT*, ' --- Synthetic profiles written in: '
-         PRINT*, '   ', SYN_PATH
-         PRINT*, ' ... according to model atmosphere from: '
-         PRINT*, '   ', ATMOSIN_PATH
-    endif
-
   ENDIF
   run_hexic = 1
 END function run_hexic

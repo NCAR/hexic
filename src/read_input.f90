@@ -33,44 +33,8 @@ IMPLICIT NONE
         READ(UNIT=97, FMT='(A)') LINE
      ENDDO
      ATOM_PATH = Line
+
      READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
-     ATMOSIN_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
-     WEIGHTS_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     NOISE_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
-     SCAT_PATH = Line
-     READ (UNIT=97, FMT='(A)') Line
-     DO WHILE (SCAN(Line,'!#').GT.0)
-        READ(UNIT=97, FMT='(A)') Line
-     ENDDO
-     DO WHILE (TRIM(Line).EQ.'')
-        READ(UNIT=97, FMT='(A)') LINE
-     ENDDO
-     FREE_PATH = Line
-        READ (UNIT=97, FMT='(A)') Line
      DO WHILE (SCAN(Line,'!#').GT.0)
         READ(UNIT=97, FMT='(A)') Line
      ENDDO
@@ -88,41 +52,6 @@ if (DEBUG) then
     ENDIF
 endif
 
-! Weights and noise (only in inversion mode)
-IF ((MODE .EQ. 'i') .OR. (MODE .EQ. 'I')) THEN
-
-   INQUIRE(FILE=WEIGHTS_PATH, EXIST = file_exists)
-   IF (file_exists) THEN
-      if (DEBUG) then
-          PRINT*, ' --- Reading weights file...'
-      endif
-      CALL READ_WEIGHTS
-      if (DEBUG) then
-          PRINT*, '     WEIGHTS = ', WEIGHTS(:)
-      endif
-   ELSE
-      if (DEBUG) then
-          PRINT*, " --- No WEIGHTS provided. Assuming [1, 10, 10, 3] for [I, Q, U, V]."
-      endif
-      WEIGHTS(:) = (/0.1,1.,1.,0.3/)
-   ENDIF
-
-   INQUIRE(FILE=NOISE_PATH, EXIST = file_exists)
-   IF (file_exists) THEN
-      if (DEBUG) then
-          PRINT*, ' --- Reading NOISE file...'
-      endif
-      CALL READ_NOISE
-      if (DEBUG) then
-          PRINT*, '     NOISE = ', NOISE(:)
-      endif
-   ELSE
-      if (DEBUG) then
-          PRINT*, " --- No NOISE provided. Assuming [1D-3, 1D-3, 1D-3, 1D-3] of Icont."
-      endif
-      NOISE(:) = (/1.0D-3, 1.0D-3, 1.0D-3, 1.0D-3/)
-   ENDIF
-ENDIF
 
 
 END SUBROUTINE READ_INPUT

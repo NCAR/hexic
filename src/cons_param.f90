@@ -6,7 +6,7 @@ MODULE CONS_PARAM
   !
 
   ! set DEBUG to print debugging output
-  logical, parameter :: DEBUG = .false.
+  logical, parameter :: DEBUG = .true.
 
   INTEGER,          PARAMETER  :: DP = KIND(1.D0)
   INTEGER,          PARAMETER  :: SP = KIND(1.)

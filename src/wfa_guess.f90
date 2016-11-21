@@ -120,14 +120,13 @@ GUESS(3) = ATAN2(sum(U),sum(Q))*90/DPI
     GUESS(8) = 0.7D0 * ICONT
     GUESS(9) = 0.3D0 * ICONT
 
-! If there is a scattered light profile provided, start with a value of 0.8 for the filling factor.
+! If there is a scattered light profile provided, start with a value of 0.8 for the filling factor. This is currently in run_hexic.f90 (set to 0.8 if scattered light exists).
 
-    INQUIRE(FILE=SCAT_PATH, EXIST = file_exists)
-    IF (file_exists) THEN
-       GUESS(10) = 0.8D0
-    ELSE
-       GUESS(10) = 1.0D0
-    ENDIF
+!    IF (MAXVAL(SCAT) .GT. ICONT/10) THEN
+!       GUESS(10) = 0.8D0
+!    ELSE
+!       GUESS(10) = 1.0D0
+!    ENDIF
 
 !Test by RCE on Dec 14, 2015 for HMI DATA:
 

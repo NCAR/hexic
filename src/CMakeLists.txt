@@ -22,14 +22,14 @@ set(f90_srcs
     read_filt.f90
     read_input.f90
     read_line.f90
-    read_noise.f90
-    read_scat.f90
-    read_weights.f90
+#    read_noise.f90
+#    read_scat.f90
+#    read_weights.f90
     run_hexic.f90
     solve_svd.f90
     wave_init.f90
     wfa_guess.f90
-    write_filters.f90
+#    write_filters.f90
     zeeman.f90)
 
 set(f_srcs
@@ -56,8 +56,8 @@ set_target_properties(chexic-shared
   PROPERTIES
     OUTPUT_NAME libchexic
     PREFIX ""
-    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 add_library(chexic-static STATIC ${c_wrapper} $<TARGET_OBJECTS:hexic-objects>)
@@ -75,8 +75,8 @@ set_target_properties(hexic-shared
   PROPERTIES
     OUTPUT_NAME libhexic
     PREFIX ""
-    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 add_library(hexic-static STATIC $<TARGET_OBJECTS:hexic-objects>)
@@ -84,8 +84,8 @@ set_target_properties(hexic-static
   PROPERTIES
     OUTPUT_NAME libhexic
     PREFIX ""
-    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 install(TARGETS chexic-shared
