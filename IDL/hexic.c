@@ -17,7 +17,7 @@
 
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
-  int mode, n_args, width, height, n_filters, status;
+  int mode, n_args, width, height, n_filters, n_wavelengths, status;
   double *observations, *results, *synthetic;
   IDL_VPTR vptr_observations = argv[0];
   IDL_VPTR vptr_results, vptr_synthetic, vptr_status;
@@ -27,6 +27,8 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
 
   typedef struct {
     IDL_KW_RESULT_FIRST_FIELD;
+    IDL_VPTR filters;
+    int filters_present;
     IDL_VPTR free;
     int free_present;
     IDL_VPTR model;
@@ -45,6 +47,8 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   } KW_RESULT;
 
   static IDL_KW_PAR kw_pars[] = {
+    { "FILTERS", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
+      IDL_KW_OFFSETOF(filters_present), IDL_KW_OFFSETOF(filters) },
     { "FREE", IDL_TYP_LONG, 1, IDL_KW_VIN,
       IDL_KW_OFFSETOF(free_present), IDL_KW_OFFSETOF(free) },
     { "MODEL", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
@@ -82,6 +86,7 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   width = vptr_observations->value.arr->dim[2];
   height = vptr_observations->value.arr->dim[3];
   mode = kw.synthesis_mode;
+  n_wavelengths = kw.filters_present ? kw.filters->value.arr->dim[1] : 0;
 
   status = hexic_invert(mode, observations, width, height, n_filters,
                         &results, &synthetic,
@@ -89,6 +94,7 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
                         (double *) (kw.weights_present ? kw.weights->value.arr->data : NULL),
                         (double *) (kw.noise_present ? kw.noise->value.arr->data : NULL),
                         (double *) (kw.scattered_light_present ? kw.scattered_light->value.arr->data : NULL),
+                        n_wavelengths, (double *) (kw.filters_present ? kw.filters->value.arr->data : NULL),
                         (int *) kw.free->value.arr->data);
 
   results_dims[0] = 11;

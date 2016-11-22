@@ -6,6 +6,7 @@ int hexic_invert(int mode,
                  double *model,
                  double *weights, double *noise,
                  double *scattered_light,
+                 int nwavelengths, double *filters,
                  int *free);
 
 // Fortran routine
@@ -15,4 +16,5 @@ int run_hexic(int *mode,
               double *model,
               double *weights, double *noise,
               double *scattered_light,
+              int *nwavelengths, double *filters,
               int *free);
