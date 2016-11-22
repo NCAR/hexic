@@ -17,7 +17,7 @@
 
 
 static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
-  int n_args, width, height, n_filters, status;
+  int mode, n_args, width, height, n_filters, status;
   double *observations, *results, *synthetic;
   IDL_VPTR vptr_observations = argv[0];
   IDL_VPTR vptr_results, vptr_synthetic, vptr_status;
@@ -37,6 +37,7 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
     int scattered_light_present;
     IDL_VPTR status;
     int status_present;
+    int synthesis_mode;
     IDL_VPTR synthetic;
     int synthetic_present;
     IDL_VPTR weights;
@@ -54,6 +55,8 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
       IDL_KW_OFFSETOF(scattered_light_present), IDL_KW_OFFSETOF(scattered_light) },
     { "STATUS", IDL_TYP_LONG, 1, IDL_KW_OUT,
       IDL_KW_OFFSETOF(status_present), IDL_KW_OFFSETOF(status) },
+    { "SYNTHESIS_MODE", IDL_TYP_LONG, 1, IDL_KW_ZERO,
+      0, IDL_KW_OFFSETOF(synthesis_mode) },
     { "SYNTHETIC", IDL_TYP_DOUBLE, 1, IDL_KW_OUT,
       IDL_KW_OFFSETOF(synthetic_present), IDL_KW_OFFSETOF(synthetic) },
     { "WEIGHTS", IDL_TYP_DOUBLE, 1, IDL_KW_VIN,
@@ -78,8 +81,9 @@ static IDL_VPTR IDL_hexic_invert(int argc, IDL_VPTR *argv, char *argk) {
   n_filters = vptr_observations->value.arr->dim[0];
   width = vptr_observations->value.arr->dim[2];
   height = vptr_observations->value.arr->dim[3];
+  mode = kw.synthesis_mode;
 
-  status = hexic_invert(observations, width, height, n_filters,
+  status = hexic_invert(mode, observations, width, height, n_filters,
                         &results, &synthetic,
                         (double *) kw.model->value.arr->data,
                         (double *) (kw.weights_present ? kw.weights->value.arr->data : NULL),

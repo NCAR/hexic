@@ -1,4 +1,5 @@
-integer function run_hexic(OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, &
+integer function run_hexic(IN_MODE, &
+                           OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, &
                            IN_MODEL, IN_WEIGHTS, IN_NOISE, IN_SCATTERED_LIGHT, &
                            IN_FREE)
 
@@ -14,6 +15,7 @@ USE FORWARD
 IMPLICIT NONE
 
 ! arguments to run_hexic
+integer(c_int), intent(in)         :: IN_MODE
 integer(c_int), intent(in)         :: Nfilts, dimX, dimY
 real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
