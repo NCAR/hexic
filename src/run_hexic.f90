@@ -1,10 +1,11 @@
 integer function run_hexic(IN_MODE, &
                            OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, &
                            IN_MODEL, IN_WEIGHTS, IN_NOISE, IN_SCATTERED_LIGHT, &
+                           in_line_filename, len_line_filename, &
                            nwavelengths, IN_FILTERS, &
                            IN_FREE)
 
-use iso_c_binding, only: c_double, c_int
+use iso_c_binding, only: c_double, c_int, c_char
 
 USE CONS_PARAM
 USE INPUT_PARAM
@@ -16,8 +17,10 @@ USE FORWARD
 IMPLICIT NONE
 
 ! arguments to run_hexic
+
 integer(c_int), intent(in)         :: IN_MODE
 integer(c_int), intent(in)         :: Nfilts, dimX, dimY, nwavelengths
+integer(c_int), intent(in)         :: len_line_filename
 real(c_double), intent(in)         :: OBSERVATIONS(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: SYNTHETIC(Nfilts, 4, dimX, dimY)
 real(c_double), intent(out)        :: RESULTS(10, dimX, dimY)
@@ -25,6 +28,8 @@ real(c_double), intent(in)         :: IN_MODEL(10)
 real(c_double), intent(in), optional         :: IN_WEIGHTS(4)
 real(c_double), intent(in), optional         :: IN_NOISE(4)
 real(c_double), intent(in), optional         :: IN_SCATTERED_LIGHT(Nfilts, 4)
+character(kind=c_char, len=1), intent(in)    :: in_line_filename(*)
+character(len=:), allocatable      :: line_filename
 real(c_double), intent(in), optional         :: IN_FILTERS(NFilts, nwavelengths)
 integer(c_int), intent(in)         :: IN_FREE(10)
 
@@ -38,12 +43,17 @@ REAL(DP), DIMENSION(13)            :: ERR
 REAL(DP), DIMENSION(8)             :: WFILT
 LOGICAL                            :: file_exists
 
+  ! copy arbitrary length C string into arbitrary length Fortran string
+  if (len_line_filename .gt. 0) then
+    allocate(character(len=len_line_filename) :: line_filename)
+    line_filename = transfer(in_line_filename(1:len_line_filename), line_filename)
+  endif
+
  ! ------ Read main input file and atomic line file
   CALL READ_INPUT
   CALL READ_LINE
 
  Nfilt = Nfilts
-
 
  ! ------ Allocate memory for the variables that depend on user input
   ALLOCATE(DSYN(11, NFILT, 4), FILTERS(NUMW, NFILT))

@@ -11,6 +11,7 @@ int hexic_invert(int mode,
                  double *model,
                  double *weights, double *noise,
                  double *scattered_light,
+                 char *line_filename, int len_line_filename,
                  int nwavelengths, double *filters,
                  int *free) {
   int status;
@@ -22,6 +23,7 @@ int hexic_invert(int mode,
   status = run_hexic(&mode, observations, &width, &height, &n_filters,
                      *results, *synthetic,
                      model, weights, noise, scattered_light,
+                     line_filename, &len_line_filename,
                      &nwavelengths, filters, free);
 
   return status;
