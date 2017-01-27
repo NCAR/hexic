@@ -2,13 +2,13 @@ integer function run_hexic(IN_MODE, &
                            OBSERVATIONS, dimX, dimY, Nfilts, RESULTS, SYNTHETIC, &
                            IN_MODEL, IN_WEIGHTS, IN_NOISE, IN_SCATTERED_LIGHT, &
                            in_line_filename, len_line_filename, &
-                           nwavelengths, IN_FILTERS, &
+                           nwavelengths, IN_FILTERS, & 
                            IN_FREE)
 
 use iso_c_binding, only: c_double, c_int, c_char
 
 USE CONS_PARAM
-USE INPUT_PARAM
+!USE INPUT_PARAM
 USE LINE_PARAM
 USE RAN_MOD
 USE INV_PARAM
@@ -43,29 +43,27 @@ REAL(DP), DIMENSION(13)            :: ERR
 REAL(DP), DIMENSION(8)             :: WFILT
 LOGICAL                            :: file_exists
 
+
   ! copy arbitrary length C string into arbitrary length Fortran string
   if (len_line_filename .gt. 0) then
     allocate(character(len=len_line_filename) :: line_filename)
     line_filename = transfer(in_line_filename(1:len_line_filename), line_filename)
   endif
 
- ! ------ Read main input file and atomic line file
-  CALL READ_INPUT
-  CALL READ_LINE
 
- Nfilt = Nfilts
+ ! ------ Read atomic line file
+  CALL READ_LINE(line_filename)
+
+  Nfilt = Nfilts
 
  ! ------ Allocate memory for the variables that depend on user input
   ALLOCATE(DSYN(11, NFILT, 4), FILTERS(NUMW, NFILT))
   ALLOCATE(OBS(NFILT, 4), SYN(NFILT, 4), SCAT(NFILT, 4))
-  FILTERS(:,:) = 0D0
  ! ------ Read instrument filter profiles
-  CALL READ_FILT(FILTERS)
+ ! CALL READ_FILT(FILTERS)
 
-  if (DEBUG) then
-      PRINT*, ' --- Reading filter profiles from:'
-      PRINT*, '          ', FILT_PATH
-  endif
+  FILTERS = TRANSPOSE(IN_FILTERS)
+ ! PRINT*, 'OLD filters input from header: ', FILTERS(1,:)
 
  ! ------ Read (guess) model atmosphere
   MODEL(:) = IN_MODEL(:)
@@ -81,7 +79,7 @@ LOGICAL                            :: file_exists
  ! ------ Initialize wavelength vector, free inversion model parameters
   CALL WAVE_INIT
 
-  IF (mode .EQ. 'i') THEN
+  IF (IN_MODE .EQ. 0) THEN     !--------- Inversion mode
      CALL FREE_INIT(IN_FREE)
      ! ------ Get weights and noise from user input
      IF (.NOT. PRESENT(IN_NOISE)) THEN
@@ -96,7 +94,7 @@ LOGICAL                            :: file_exists
      ENDIF
   ENDIF
 
-  IF (MODE .EQ. 'i') THEN ! INVERSION MODE
+  IF (IN_MODE .EQ. 0) THEN    !--------- Inversion mode
 
      ! ------- Loop over all pixels in the FOV. Calls main part of the program NPIX times.
 

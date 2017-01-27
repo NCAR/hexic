@@ -1,8 +1,5 @@
 find_package(LAPACK REQUIRED)
-
-if (USE_OPENMP)
-  find_package(OpenMP_Fortran)
-endif ()
+#find_package(OpenMP_Fortran)
 
 set(main_src
     main.f90)
@@ -12,15 +9,15 @@ set(f90_srcs
     factorial.f90
     forward.f90
     free_init.f90
-    input_param.f90
+#    input_param.f90
     inv_init.f90
     inv_param.f90
     inv_utils.f90
     line_param.f90
     new_invert.f90
     ran_mod.f90
-    read_filt.f90
-    read_input.f90
+#    read_filt.f90
+#    read_input.f90
     read_line.f90
 #    read_noise.f90
 #    read_scat.f90
@@ -44,12 +41,11 @@ add_library(hexic-objects OBJECT
             ${f_srcs}
             ${f90_srcs})
 
-set_target_properties(hexic-objects
-  PROPERTIES
-    POSITION_INDEPENDENT_CODE True
-    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
-)
+#set_target_properties(hexic-objects
+#  PROPERTIES
+#    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
+#)
 
 add_library(chexic-shared SHARED ${c_wrapper} $<TARGET_OBJECTS:hexic-objects>)
 set_target_properties(chexic-shared
@@ -65,9 +61,8 @@ set_target_properties(chexic-static
   PROPERTIES
     OUTPUT_NAME libchexic
     PREFIX ""
-    POSITION_INDEPENDENT_CODE True
-    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
-    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    COMPILE_FLAGS "${OpenMP_Fortran_FLAGS}"
+#    LINK_FLAGS "${OpenMP_Fortran_FLAGS}"
 )
 
 add_library(hexic-shared SHARED $<TARGET_OBJECTS:hexic-objects>)

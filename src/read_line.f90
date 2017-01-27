@@ -1,20 +1,23 @@
-SUBROUTINE READ_LINE
+SUBROUTINE READ_LINE(filename)
 
 !
 ! R. Centeno
 ! April 15, 2014
 ! 
-! Reads the input parameter values for the spectral line, in LINEinit.txt
+! Reads the input parameter values for the spectral line from the file passed through the header.
 !
 USE LINE_PARAM
-USE INPUT_PARAM
+
 
 IMPLICIT NONE
 
-  CHARACTER (LEN = 256) :: Line = ' '
+  CHARACTER (LEN = 256) :: Line = ' ', filename
   INTEGER               :: i
+
+PRINT*, 'Inside read_line: filename = ', filename
+
   
-  OPEN (UNIT=97, FILE = ATOM_PATH, ACTION="read", FORM='formatted')
+  OPEN (UNIT=97, FILE = filename, ACTION="read", FORM='formatted')
      READ (UNIT=97, FMT='(A)') Line
      READ (UNIT=97, FMT='(A)') Line
      READ (UNIT=97, FMT='(A)') Line
@@ -23,8 +26,6 @@ IMPLICIT NONE
      READ (UNIT=97, FMT='(F5.2)') STEPW
      READ (UNIT=97, FMT='(A)') Line
      READ (UNIT=97, FMT='(F7.2)') LAM_START
-!     READ (UNIT=97, FMT='(A)') Line
-!     READ (UNIT=97, FMT='(I4)') NFILTS
      READ (UNIT=97, FMT='(A)') Line
      READ (UNIT=97, FMT='(F5.2)') FILT_SAMP
      READ (UNIT=97, FMT='(A)') Line

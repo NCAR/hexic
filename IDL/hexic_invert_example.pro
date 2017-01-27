@@ -3,8 +3,17 @@
 pro hexic_invert_example, use_save=use_save
   compile_opt strictarr
 
+  line_filename='/Users/rce/work/HEXIC/GIT/hexic/USER_FILES/LINE_hmi.txt'
+  line_filename='LINE_hmi.txt'
+
+  path_to_filt = '/Users/rce/work/HEXIC/GIT/hexic/USER_FILES/filters_hmi.txt'
+
   if (keyword_set(use_save)) then begin
     restore, 'observations.sav';, /verbose
+    dims = SIZE(observations)
+    n_filters = dims[1]
+    n_polarization_states = dims[2]
+
   endif else begin
     ; read FITS files, etc. instead of creating random data
     n_filters = 6
@@ -14,7 +23,7 @@ pro hexic_invert_example, use_save=use_save
 
     ; area to invert in the full disk HMI image
     x1 = 2100
-    x2 = 2101
+    x2 = 2102
     y1 = 1960
     y2 = 1961
     nx = x2 - x1 + 1
@@ -35,6 +44,10 @@ pro hexic_invert_example, use_save=use_save
     RESTORE, 'observations.sav'
  endelse
 
+  PRINT, '--- Reading instruments filter profiles'
+  read_filt, path_to_filt, n_filters, filters
+
+
   PRINT, '--- Running inversion over selected field of view.'
 
   model = [20.0D, 0.0D, 0.0D, 0.5D, 10.0D, 500.0D, 0.0D, 0.1D, 0.9D, 1.0D]
@@ -45,8 +58,11 @@ pro hexic_invert_example, use_save=use_save
 ;  results = hexic_invert(observations, status=status, synthetic=synthetic, $
 ;                         model=model, weights=weights, noise = noise, free=free)
  results = hexic_invert(observations, status=status, synthetic=synthetic, $
-                         model=model, free=free)
+                         model=model, free=free, line_filename = line_filename, filters=filters)
+;results = hexic_invert(/synthesis_mode, observations, status=status, synthetic=synthetic, $
+;                         model=model, free=free, line_filename = line_filename)
   help, results, status, synthetic
+
 
 j = 1
 k = 1
